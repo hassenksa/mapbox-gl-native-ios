@@ -586,6 +586,7 @@ public:
     _pan.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:_pan];
     _scrollEnabled = YES;
+    _scrollingMode = MGLScrollingModeUnlimited;
 
     _pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     _pinch.delegate = self;
@@ -1730,7 +1731,18 @@ public:
 
         if ([self _shouldChangeFromCamera:oldCamera toCamera:toCamera])
         {
-            self.mbglMap.moveBy({ delta.x, delta.y });
+
+            switch(self.scrollingMode){
+               case MGLScrollingModeVertical:
+                  self.mbglMap.moveBy({ 0, delta.y });
+                  break;
+               case MGLUserScrollingModeHorizontal:
+                  self.mbglMap.moveBy({ delta.x, 0 });
+                  break;
+               default:
+                  self.mbglMap.moveBy({ delta.x, delta.y });
+            }
+
             [pan setTranslation:CGPointZero inView:pan.view];
         }
 
@@ -1753,7 +1765,16 @@ public:
 
             if ([self _shouldChangeFromCamera:oldCamera toCamera:toCamera])
             {
-                self.mbglMap.moveBy({ offset.x, offset.y }, MGLDurationFromTimeInterval(self.decelerationRate));
+                switch(self.scrollingMode){
+                   case MGLScrollingModeVertical:
+                      self.mbglMap.moveBy({ 0, offset.y }, MGLDurationFromTimeInterval(self.decelerationRate));
+                      break;
+                   case MGLUserScrollingModeHorizontal:
+                      self.mbglMap.moveBy({ offset.x, 0 }, MGLDurationFromTimeInterval(self.decelerationRate));
+                      break;
+                   default:
+                      self.mbglMap.moveBy({ offset.x, offset.y }, MGLDurationFromTimeInterval(self.decelerationRate));
+                }
             }
         }
 

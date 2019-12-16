@@ -105,6 +105,15 @@ typedef NS_ENUM(NSUInteger, MGLUserTrackingMode) {
     MGLUserTrackingModeFollowWithCourse,
 };
 
+typedef NS_ENUM(NSUInteger, MGLUserScrollingMode) {
+    /** The map allows the user to only scroll horizontally. */
+    MGLUserScrollingModeHorizontal              = 0,
+    /** The map allows the user to only scroll vertically. */
+    MGLScrollingModeVertical,
+    /** The map allows the user to scroll both horizontally and vertically. */
+    MGLScrollingModeUnlimited
+};
+
 /** Options for `MGLMapView.preferredFramesPerSecond`. */
 typedef NSInteger MGLMapViewPreferredFramesPerSecond NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -688,6 +697,20 @@ MGL_EXPORT
  programmatically.
  */
 @property(nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
+
+/**
+ The scrolling mode the user is allowed to use to interact with the map.
+
+`MGLScrollingModeHorizontal` only allows the user to scroll horizontally on the map,
+ restricting a user's ability to scroll vertically.
+`MGLScrollingModeVertical` only allows the user to scroll vertically on the map,
+ restricting a user's ability to scroll horizontally.
+ `MGLScrollingModeUnlimited` allows the user to scroll both horizontally and vertically
+ on the map.
+
+ By default, this property is set to `MGLUserScrollingModeUnlimited`.
+ */
+@property (nonatomic, assign) MGLUserScrollingMode scrollingMode;
 
 /**
  A Boolean value that determines whether the user may rotate the map,
