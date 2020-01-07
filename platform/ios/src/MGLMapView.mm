@@ -586,7 +586,7 @@ public:
     _pan.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:_pan];
     _scrollEnabled = YES;
-    _scrollingMode = MGLScrollingModeUnlimited;
+    _panScrollingMode = MGLPanScrollingModeDefault;
 
     _pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     _pinch.delegate = self;
@@ -1727,16 +1727,17 @@ public:
     {
         CGPoint delta = [pan translationInView:pan.view];
 
+        NSLog(@"%@", NSStringFromCGPoint(delta));
+
         MGLMapCamera *toCamera = [self cameraByPanningWithTranslation:delta panGesture:pan];
 
         if ([self _shouldChangeFromCamera:oldCamera toCamera:toCamera])
         {
-
-            switch(self.scrollingMode){
-               case MGLScrollingModeVertical:
+            switch(self.panScrollingMode){
+               case MGLPanScrollingModeVertical:
                   self.mbglMap.moveBy({ 0, delta.y });
                   break;
-               case MGLUserScrollingModeHorizontal:
+               case MGLPanScrollingModeHorizontal:
                   self.mbglMap.moveBy({ delta.x, 0 });
                   break;
                default:
@@ -1765,11 +1766,11 @@ public:
 
             if ([self _shouldChangeFromCamera:oldCamera toCamera:toCamera])
             {
-                switch(self.scrollingMode){
-                   case MGLScrollingModeVertical:
+                switch(self.panScrollingMode){
+                   case MGLPanScrollingModeVertical:
                       self.mbglMap.moveBy({ 0, offset.y }, MGLDurationFromTimeInterval(self.decelerationRate));
                       break;
-                   case MGLUserScrollingModeHorizontal:
+                   case MGLPanScrollingModeHorizontal:
                       self.mbglMap.moveBy({ offset.x, 0 }, MGLDurationFromTimeInterval(self.decelerationRate));
                       break;
                    default:
